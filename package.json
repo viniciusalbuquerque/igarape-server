@@ -1,0 +1,14 @@
+{
+  "name": "igarape-server",
+  "version": "1.0.0",
+  "description": "Server for Igarape-website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Tulio Assis and Vinicius Albuquerque",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.16.3"
+  }
+}
