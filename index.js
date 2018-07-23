@@ -1,21 +1,6 @@
+const db = require('./js/db')
 const express = require('express')
 const app = express()
-
-var posts = {
-	"u1" : ["post 1", "post 2"],
-	"u2" : ["post 3"]
-}
-
-var events = {
-	"event1" : {
-		"date" : "2018-07-20",
-		"name" : "Event 1"
-	}, 
-	"event2" : {
-		"date" : "2018-07-23",
-		"name" : "Event 2"
-	}
-}
 
 function showIndexPage(req, res) {
 	res.send("Index Page")
@@ -30,32 +15,28 @@ function showAboutPage(req, res) {
 app.get('/about', showAboutPage)
 
 
+function responseAssembler(status, message, data) {
+	return response = {
+		status : status,
+		message : message,
+		data : data
+	};
+}
+
+var retrieveCallback = function (res, data, err) {
+	var response;
+	if(err) {
+		response = responseAssembler(false, "I'm sorry, something happened and we were not able to finish your request", err)
+	} else {
+		response = responseAssembler(true, "Data retrieved succesfully.", data)
+	}
+	res.send(response)
+}
+
 function retrievePosts(req, res) {
 	var data = req.params
 	var who = data.who
-
-	//ToDo retrieve posts from db
-	var response;
-	if(!who) {
-		response = {
-			data : posts,
-			message : "Retrieving all posts"	
-		} 
-	} else {
-		if(!posts[who]) {
-			response = {
-				data : posts,
-				message : "Didn't find. Retrieving all posts"
-			}
-		} else {
-			response = {
-				data : posts[who],
-				who : who,
-				message : "Retrieving posts of " + who
-			}
-		}
-	}
-	res.send(response)
+	db.getPosts(who, res, retrieveCallback)
 } 
 
 app.get('/posts/:who?', retrievePosts)
@@ -64,30 +45,7 @@ app.get('/posts/:who?', retrievePosts)
 function retrieveEvents(req, res) {
 	var data = req.params
 	var which = data.which
-
-	//ToDo retrieve events from db
-	var response;
-	if(!which) {
-		response = {
-			data : events,
-			message : "Retrieving all events"	
-		} 
-	} else {
-		if(!events[which]) {
-			response = {
-				data : events,
-				message : "Didn't find. Retrieving all events"
-			}
-		} else {
-			response = {
-				data : events[which],
-				which : which,
-				message : "Retrieving " + which
-			}
-		}
-	}
-	res.send(response)
-
+	db.getEvents(which, res, retrieveCallback)
 }
 
 app.get('/events/:which?', retrieveEvents)
