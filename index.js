@@ -1,16 +1,27 @@
 const db = require('./js/db')
+const fs = require('fs')
 const express = require('express')
 const app = express()
 
+
+function showHTML(res, filepath) {
+	fs.readFile(filepath, (err, html) => {
+		if(err) throw err;
+		res.statusCode = 200
+		res.setHeader('Content-Type', 'text/html')
+		res.write(html)
+		res.end();
+	})
+}
+
 function showIndexPage(req, res) {
-	res.send("Index Page")
+	showHTML(res, 'html/index.html')
 }
 app.get('/', showIndexPage)
 
 
 function showAboutPage(req, res) {
-	// res.sendFile('html/about.html')
-	res.send('About')
+	showHTML(res, 'html/about.html')
 }
 app.get('/about', showAboutPage)
 
