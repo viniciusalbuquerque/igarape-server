@@ -9,39 +9,38 @@ admin.initializeApp( {
 const db = admin.firestore()
 
 
-function localCallback(querySnapshot, res, externalCallback){
+function localCallback(querySnapshot, err, externalCallback) {
+  if(err) {
+    externalCallback(null, err)
+    return;
+  }
+
   var array = [];
   querySnapshot.forEach(doc => {
     array.push(doc.data())
   })
-  externalCallback(res, array, null)
+  externalCallback(array, null)
 }
 
-function executeQuery(query, res, callback) {
+function executeQuery(query, callback) {
   query.get()
   .then(querySnapshot => {
-    localCallback(querySnapshot, res, callback)
+    localCallback(querySnapshot, null, callback)
   })
   .catch(err => {
     console.error('Error getting document', err)
-    callback(res, null, err)
+    localCallback(null, err, callback)
   })
 }
 
-module.exports.getPosts = function(author, res, callback) {
+module.exports.getPosts = function(callback) {
   //Improve way of loading posts from a specific author. (Some kind of ID)
   var query = db.collection(TABLE.POST_TABLE);
-  if(author)
-    query = query.where(TABLE.POST_AUTHOR, '==', author)
-  
-  executeQuery(query, res, callback)
+  executeQuery(query, callback)
 }
 
-module.exports.getEvents = function(event, res, callback) {
+module.exports.getEvents = function(event, callback) {
   //Reference by id
   var query = db.collection(TABLE.EVENT_TABLE);
-  if(event)
-    query = query.where(TABLE.EVENT_NAME, '==', event)
-
-  executeQuery(query, res, callback)
+  executeQuery(query, callback)
 }

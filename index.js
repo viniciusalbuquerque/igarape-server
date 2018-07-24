@@ -1,8 +1,11 @@
-const db = require('./js/db')
+// const db = require('./js/db')
 const fs = require('fs')
 const express = require('express')
 const app = express()
+// const cache = require('./js/cache')
 
+const proxy = require('./js/proxy')
+const port = 3000;
 
 function showHTML(res, filepath) {
 	fs.readFile(filepath, (err, html) => {
@@ -25,7 +28,6 @@ function showAboutPage(req, res) {
 }
 app.get('/about', showAboutPage)
 
-
 function responseAssembler(status, message, data) {
 	return response = {
 		status : status,
@@ -34,7 +36,7 @@ function responseAssembler(status, message, data) {
 	};
 }
 
-var retrieveCallback = function (res, data, err) {
+var retrieveDataCallback = function (res, data, err) {
 	var response;
 	if(err) {
 		response = responseAssembler(false, "I'm sorry, something happened and we were not able to finish your request", err)
@@ -47,21 +49,20 @@ var retrieveCallback = function (res, data, err) {
 function retrievePosts(req, res) {
 	var data = req.params
 	var who = data.who
-	db.getPosts(who, res, retrieveCallback)
+	proxy.getPosts(res, who, retrieveDataCallback)
 } 
 
 app.get('/posts/:who?', retrievePosts)
 
-
 function retrieveEvents(req, res) {
 	var data = req.params
 	var which = data.which
-	db.getEvents(which, res, retrieveCallback)
+	proxy.getEvents(res, which, retrieveDataCallback)
 }
 
 app.get('/events/:which?', retrieveEvents)
 
-app.listen(3000, listening)
+app.listen(port, listening)
 
 function listening() {
 	console.log('listening...')
