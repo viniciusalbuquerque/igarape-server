@@ -12,6 +12,7 @@ function filterPostsByAuthor(posts, author) {
 	return _posts
 }
 
+//TODO Change for id
 function filterEventByName(events, name) {
 	var _events = []
 	events.forEach(event => {

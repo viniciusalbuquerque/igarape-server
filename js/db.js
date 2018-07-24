@@ -8,7 +8,6 @@ admin.initializeApp( {
 
 const db = admin.firestore()
 
-
 function localCallback(querySnapshot, err, externalCallback) {
   if(err) {
     externalCallback(null, err)
@@ -17,7 +16,9 @@ function localCallback(querySnapshot, err, externalCallback) {
 
   var array = [];
   querySnapshot.forEach(doc => {
-    array.push(doc.data())
+    var data = doc.data()
+    data['id'] = doc.id
+    array.push(data)
   })
   externalCallback(array, null)
 }
@@ -34,13 +35,11 @@ function executeQuery(query, callback) {
 }
 
 module.exports.getPosts = function(callback) {
-  //Improve way of loading posts from a specific author. (Some kind of ID)
   var query = db.collection(TABLE.POST_TABLE);
   executeQuery(query, callback)
 }
 
-module.exports.getEvents = function(event, callback) {
-  //Reference by id
+module.exports.getEvents = function(callback) {
   var query = db.collection(TABLE.EVENT_TABLE);
   executeQuery(query, callback)
 }

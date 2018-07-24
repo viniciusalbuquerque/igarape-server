@@ -1,9 +1,6 @@
-// const db = require('./js/db')
 const fs = require('fs')
 const express = require('express')
 const app = express()
-// const cache = require('./js/cache')
-
 const proxy = require('./js/proxy')
 const port = 3000;
 
