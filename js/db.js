@@ -20,6 +20,7 @@ function localCallback(querySnapshot, err, externalCallback) {
     data['id'] = doc.id
     array.push(data)
   })
+  
   externalCallback(array, null)
 }
 

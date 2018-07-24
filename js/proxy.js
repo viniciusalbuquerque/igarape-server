@@ -64,7 +64,7 @@ module.exports.getEvents = function(res, event, callback) {
 			return;
 		}
 
-		db.getEvents(event, (events, err) => {
+		db.getEvents((events, err) => {
 			console.log('db')
 			if(err) {
 				callback(res, null, err)
