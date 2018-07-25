@@ -18,16 +18,13 @@ function showHTML(res, filepath) {
 	})
 }
 
-function showIndexPage(req, res) {
+app.get('/', (req, res) => {
 	showHTML(res, 'html/index.html')
-}
-app.get('/', showIndexPage)
+})
 
-
-function showAboutPage(req, res) {
+app.get('/about', (req, res) => {
 	showHTML(res, 'html/about.html')
-}
-app.get('/about', showAboutPage)
+})
 
 function responseAssembler(status, message, data) {
 	return response = {
@@ -47,28 +44,21 @@ var retrieveDataCallback = function (res, data, err) {
 	res.send(response)
 }
 
-function retrievePosts(req, res) {
+app.get('/posts/:who?', (req, res) => {
 	var data = req.params
 	var who = data.who
 	proxy.getPosts(res, who, retrieveDataCallback)
-} 
+})
 
-app.get('/posts/:who?', retrievePosts)
-
-function retrieveEvents(req, res) {
+app.get('/events/:which?', (req, res) => {
 	var data = req.params
 	var which = data.which
 	proxy.getEvents(res, which, retrieveDataCallback)
-}
-
-app.get('/events/:which?', retrieveEvents)
+})
 
 
 var responseToAdd = function(res, success, data) {
 	var response;
-
-	console.log('Response - success: ' + success)
-
 	if(!success) {
 		response = responseAssembler(false, "I'm sorry, something happened and we were not able to finish your request", data)
 	} else {
@@ -78,7 +68,6 @@ var responseToAdd = function(res, success, data) {
 } 
 
 app.post('/posts/add', (req, res) => {
-
 	//TODO Field validations
 	var post_text = req.body.text
 	var post_author = req.body.author
