@@ -75,3 +75,21 @@ module.exports.getEvents = function(res, event, callback) {
 		})
 	})
 }
+
+module.exports.addPost = function(res, post, callback) {
+	db.addPost(post, (success, post) => {
+		if(success)
+			cache.deleteFromCache(cache.KEYS.POSTS);
+
+		callback(res, success, post)
+	})
+}
+
+module.exports.addEvent = function(res, event, callback) {
+	db.addEvent(event, (success, event) => {
+		if(success)
+			cache.deleteFromCache(cache.KEYS.EVENTS);
+
+		callback(res, success, event)
+	})
+}

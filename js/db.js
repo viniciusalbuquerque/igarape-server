@@ -44,3 +44,26 @@ module.exports.getEvents = function(callback) {
   var query = db.collection(TABLE.EVENT_TABLE);
   executeQuery(query, callback)
 }
+
+
+function executeAddQuery(table, data, callback) {
+  var query = db.collection(table).add(data).then(ref => {
+    data['id'] = ref.id
+    console.log('done adding')
+    console.log(data)
+    callback(true, data)
+  })
+  .catch(err => {
+    console.log('error when adding')
+    console.log(err)
+    callback(false, err)
+  })
+}
+
+module.exports.addPost = function(post, callback) {
+  executeAddQuery(TABLE.POST_TABLE, post, callback)
+}
+
+module.exports.addEvent = function(event, callback) {
+  executeAddQuery(TABLE.EVENT_TABLE, event, callback)
+}

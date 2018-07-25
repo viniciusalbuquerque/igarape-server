@@ -9,6 +9,7 @@
   "author": "Tulio Assis and Vinicius Albuquerque",
   "license": "MIT",
   "dependencies": {
+    "body-parser": "^1.18.3",
     "express": "^4.16.3",
     "firebase-admin": "^5.13.0",
     "node-cache": "^4.2.0"

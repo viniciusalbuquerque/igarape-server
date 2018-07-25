@@ -2,7 +2,11 @@ const fs = require('fs')
 const express = require('express')
 const app = express()
 const proxy = require('./js/proxy')
+const bodyParser = require('body-parser')
 const port = 3000;
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({ extended: true }))
 
 function showHTML(res, filepath) {
 	fs.readFile(filepath, (err, html) => {
@@ -58,6 +62,46 @@ function retrieveEvents(req, res) {
 }
 
 app.get('/events/:which?', retrieveEvents)
+
+
+var responseToAdd = function(res, success, data) {
+	var response;
+
+	console.log('Response - success: ' + success)
+
+	if(!success) {
+		response = responseAssembler(false, "I'm sorry, something happened and we were not able to finish your request", data)
+	} else {
+		response = responseAssembler(true, "Data added successfuly.", data)
+	}
+	res.send(response)
+} 
+
+app.post('/posts/add', (req, res) => {
+	var post_text = req.body.text
+	var post_author = req.body.author
+
+	var post = {
+		author : post_author,
+		text : post_text
+	}
+
+	proxy.addPost(res, post, responseToAdd)
+})
+
+app.post('/events/add', (req, res) => {
+	var event_name = req.body.name
+
+	//Check if it's going to be timestamp or something else
+	var event_date = req.body.date
+
+	var event = {
+		name : event_name,
+		date : event_date
+	}
+
+	proxy.addEvent(res, event, responseToAdd)
+})
 
 app.listen(port, listening)
 
