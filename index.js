@@ -78,6 +78,8 @@ var responseToAdd = function(res, success, data) {
 } 
 
 app.post('/posts/add', (req, res) => {
+
+	//TODO Field validations
 	var post_text = req.body.text
 	var post_author = req.body.author
 
@@ -90,8 +92,8 @@ app.post('/posts/add', (req, res) => {
 })
 
 app.post('/events/add', (req, res) => {
+	//TODO Field validations
 	var event_name = req.body.name
-
 	//Check if it's going to be timestamp or something else
 	var event_date = req.body.date
 
